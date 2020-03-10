@@ -3,11 +3,11 @@
     "models": [
         { "name": "CommonMarkModel",
           "namespace" : "org.accordproject.commonmark",
-          "from": "https://models.accordproject.org/markdown/commonmark.cto",
+          "from": "https://release-1-0--accordproject-models.netlify.com/markdown/commonmark.cto",
           "js": "packages/markdown-common/src/externalModels" },
         { "name": "CiceroMarkModel",
           "namespace" : "org.accordproject.ciceromark",
-          "from": "https://models.accordproject.org/markdown/ciceromark@0.2.0.cto",
+          "from": "https://release-1-0--accordproject-models.netlify.com/markdown/ciceromark@0.2.0.cto",
           "js": "packages/markdown-cicero/src/externalModels" }
     ]
 }
