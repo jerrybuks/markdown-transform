@@ -40,6 +40,7 @@ class CommonMarkTransformer {
      * @param {boolean} [options.enableSourceLocation] if true then location information is returned
      * @param {boolean} [options.noIndex] do not index ordered list (i.e., use 1. everywhere)
      * @param {boolean} [options.tagInfo] Construct tags for HTML elements
+     * @param {boolean} [options.blockAsInline] parse variables inside htmlBlocks
      */
     constructor(options) {
         this.options = options;
@@ -212,10 +213,36 @@ class CommonMarkTransformer {
 
         const reader = new commonmark.Parser();
         const writer = new commonmark.XmlRenderer();
+        const htmlBlocks = markdown.split('\n').find((elem,index,arr) => elem[0] === "<" && arr[index-1] ==='');
+        const marker = 'blockParsing'; // used to mark htmlBlocks
+        if(htmlBlocks){
+            if(that.options.blockParsing){
+                const arrMarkdown = markdown.split('\n');
+                arrMarkdown.forEach((str,index,arr) => {
+                    if(str[0] === "<" && arr[index-1] ===''){
+                        str = marker + str;
+                        arrMarkdown[index] = str;
+                    }
+                })
+                markdown =  arrMarkdown.join('\n');
+            } else {
+                console.log("Variables in html blocks will not be parsed, set blockParsing to true")
+            }
+        }
+       
         const parsed = reader.parse(markdown);
-        const xml = writer.render(parsed);
+        let xml = writer.render(parsed);
         // console.log('====== XML =======');
         // console.log(xml);
+        if(that.options.blockParsing && htmlBlocks){
+            const arrXml = xml.split('\n');
+            arrXml.forEach((str,index) => {
+                if(str.includes(marker)){
+                    arrXml.splice(index,1)
+                }
+            })
+            xml = arrXml.join('\n') 
+        }
         parser.write(xml).close();
         // console.log('====== JSON =======');
         let json = stack.peek();
